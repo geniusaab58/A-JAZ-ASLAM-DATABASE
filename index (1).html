@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pak Database SimData Checker</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff;
+            }
+            to {
+                text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #0080ff;
+            }
+        }
+        
+        .input-group {
+            margin: 30px 0;
+        }
+        
+        input {
+            padding: 12px 15px;
+            width: 70%;
+            border-radius: 25px;
+            border: 2px solid #00ffff;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            box-shadow: 0 0 10px #00ffff;
+        }
+        
+        button {
+            padding: 12px 25px;
+            margin: 10px;
+            border-radius: 25px;
+            border: none;
+            background: linear-gradient(45deg, #00ffff, #0080ff);
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #00ffff;
+        }
+        
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            border-left: 3px solid #00ffff;
+            text-align: left;
+            display: none;
+        }
+        
+        .result-line {
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        .error-message {
+            color: #ff5555;
+            margin-top: 10px;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 85, 85, 0.5);
+            display: none;
+        }
+        
+        .social-links {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .social-btn {
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .telegram {
+            background: linear-gradient(45deg, #0088cc, #00aced);
+        }
+        
+        .whatsapp {
+            background: linear-gradient(45deg, #25D366, #128C7E);
+        }
+        
+        .social-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 255, 255, 0.4);
+        }
+        
+        .developer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        .developer span {
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AIJAZ ASLAM SIMDATA</h1>
+        
+        <div class="input-group">
+            <input type="text" id="searchInput" placeholder="Enter 3xxxxxxxxx (10 digits) or 13-digit CNIC">
+            <div id="errorMessage" class="error-message">Please enter a valid 10-digit number (starting with 3) or 13-digit CNIC</div>
+            <button onclick="searchData()">Search</button>
+            <button onclick="clearResults()">Clear</button>
+        </div>
+        
+        <div id="results" class="results"></div>
+        
+        <div class="social-links">
+            <a href="https://t.me/Tips0Courses" class="social-btn telegram" target="_blank">Telegram Group</a>
+            <a href="https://chat.whatsapp.com/JBrpcFaktkWDovnmGdCvv4" class="social-btn whatsapp" target="_blank">WhatsApp Channel</a>
+        </div>
+        
+        <div class="developer">Developed by <span>AIJAZ ASLAM</span></div>
+    </div>
+    
+    <script>
+        function searchData() {
+            const input = document.getElementById('searchInput').value.trim();
+            const resultsDiv = document.getElementById('results');
+            const errorDiv = document.getElementById('errorMessage');
+            
+            // Hide previous messages
+            errorDiv.style.display = 'none';
+            resultsDiv.style.display = 'none';
+            
+            if (!input) {
+                errorDiv.textContent = 'Please enter a number or CNIC';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            if (!/^(3\d{9}|\d{13})$/.test(input)) {
+                errorDiv.textContent = 'Please enter a valid 10-digit number (starting with 3) or 13-digit CNIC';
+                errorDiv.style.display = 'block';
+                return;
+            }
+            
+            resultsDiv.innerHTML = '<p>Searching... Please wait</p>';
+            resultsDiv.style.display = 'block';
+            
+            // API call
+            fetch(`https://anoncyberwarrior.com/acwtools.php?num=${input}`)
+                .then(response => response.text())
+                .then(data => {
+                    if (data.includes("error") || data.includes("not found") || data.includes("invalid")) {
+                        resultsDiv.innerHTML = '<p>No data found for the provided input</p>';
+                    } else {
+                        // Clean and format the data
+                        const formattedData = formatApiData(data);
+                        resultsDiv.innerHTML = formattedData;
+                    }
+                })
+                .catch(error => {
+                    resultsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
+                });
+        }
+        
+        function formatApiData(apiData) {
+            try {
+                // First try to parse as JSON
+                let jsonData;
+                try {
+                    // Fix common JSON issues in the response
+                    const fixedData = apiData
+                        .replace(/\\"/g, '"') // Unescape quotes
+                        .replace(/"\s*"/g, '", "') // Fix missing commas
+                        .replace(/"\s*:/g, '":') // Fix spaces before colons
+                        .replace(/:\s*"/g, ': "'); // Fix spaces after colons
+                    
+                    jsonData = JSON.parse(fixedData);
+                } catch (e) {
+                    // If JSON parsing fails, try to extract data manually
+                    const nameMatch = apiData.match(/"Name":"([^"]+)"/);
+                    const cnicMatch = apiData.match(/"CNIC":"([^"]+)"/);
+                    const numberMatch = apiData.match(/"Numbers":"([^"]+)"/);
+                    const addressMatch = apiData.match(/"Address":"([^"]+)"/);
+                    
+                    const name = nameMatch ? nameMatch[1] : 'N/A';
+                    const cnic = cnicMatch ? cnicMatch[1] : 'N/A';
+                    const number = numberMatch ? numberMatch[1] : 'N/A';
+                    const address = addressMatch ? addressMatch[1] : 'N/A';
+                    
+                    return `
+                        <div class="result-line"><strong>Name:</strong> ${name}</div>
+                        <div class="result-line"><strong>CNIC:</strong> ${cnic}</div>
+                        <div class="result-line"><strong>Number:</strong> ${number}</div>
+                        <div class="result-line"><strong>Address:</strong> ${address}</div>
+                    `;
+                }
+                
+                // If JSON parsing succeeded
+                return `
+                    <div class="result-line"><strong>Name:</strong> ${jsonData.Name || 'N/A'}</div>
+                    <div class="result-line"><strong>CNIC:</strong> ${jsonData.CNIC || 'N/A'}</div>
+                    <div class="result-line"><strong>Number:</strong> ${jsonData.Numbers || 'N/A'}</div>
+                    <div class="result-line"><strong>Address:</strong> ${jsonData.Address || 'N/A'}</div>
+                `;
+            } catch (e) {
+                return '<p>Could not parse the API response</p>';
+            }
+        }
+        
+        function clearResults() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
